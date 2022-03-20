@@ -20,7 +20,6 @@ import net.id.aether.client.rendering.shader.AetherShaders;
 import net.id.aether.client.rendering.texture.AetherTextures;
 import net.id.aether.client.rendering.util.AetherColorProviders;
 import net.id.aether.commands.AetherCommands;
-import net.id.aether.devel.AetherDevel;
 import net.id.aether.effect.AetherStatusEffects;
 import net.id.aether.effect.condition.Conditions;
 import net.id.aether.entities.AetherEntityTypes;
@@ -102,9 +101,7 @@ public class Aether implements ModInitializer, ClientModInitializer {
         AetherScreens.init();
         AetherLore.init();
         AetherParticles.init();
-        if(FabricLoader.getInstance().isDevelopmentEnvironment()){
-            AetherDevel.init();
-        }
+        // TODO MIGRATION: DEVEL
     }
 
     @Override
@@ -124,8 +121,5 @@ public class Aether implements ModInitializer, ClientModInitializer {
         Conditions.clientInit();
         AetherShaders.init();
         HolidayBlockModel.init();
-        if(FabricLoader.getInstance().isDevelopmentEnvironment()){
-            AetherDevel.Client.init();
-        }
     }
 }
