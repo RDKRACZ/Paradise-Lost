@@ -32,16 +32,13 @@
     "server.PlayerManagerMixin",
     "server.ServerPlayerEntityMixin",
     "server.ServerPlayNetworkHandlerMixin",
-    "server.ServerWorldMixin",
     "structure.StructureFeatureAccessor",
     "util.NbtCompoundAccessor",
     "util.RarityMixin",
     "util.SignTypeAccessor"
   ],
   "client": [
-    "client.ClientPlayerEntityMixin",
     "client.ClientPlayNetworkHandlerMixin",
-    "client.ClientWorldMixin",
     "client.ItemStackMixin",
     "client.MinecraftClientMixin",
     "client.SoundManagerMixin",
