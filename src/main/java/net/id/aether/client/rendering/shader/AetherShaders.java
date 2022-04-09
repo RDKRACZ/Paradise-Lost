@@ -15,32 +15,32 @@ import static net.id.aether.Aether.locate;
 @Environment(EnvType.CLIENT)
 public final class AetherShaders{
     private AetherShaders(){}
-
+    
     static final ManagedCoreShader AURAL;
     private static final Uniform1f AURAL_TIME;
-
+    
     static final ManagedCoreShader AURAL_CUTOUT;
     private static final Uniform1f AURAL_CUTOUT_TIME;
-
+    
     static {
         var manager = ShaderEffectManager.getInstance();
         AURAL = manager.manageCoreShader(locate("aural"), VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL);
         AURAL_TIME = AURAL.findUniform1f("Time");
-
+    
         AURAL_CUTOUT = manager.manageCoreShader(locate("aural_cutout_mipped"), VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL);
         AURAL_CUTOUT_TIME = AURAL.findUniform1f("Time");
     }
-
+    
     public static void init(){
         AetherRenderLayers.init();
         EntitiesPreRenderCallback.EVENT.register(AetherShaders::preRender);
     }
-
+    
     private static float auralTime = 0;
-
+    
     public static void preRender(Camera camera, Frustum frustum, float tickDelta){
         auralTime += tickDelta;
-
+        
         if(AURAL_TIME != null){
             AURAL_TIME.set(auralTime);
         }

@@ -200,7 +200,7 @@ loom {
 
 jar {
     manifest {
-        attributes 'Implementation-Title': 'ParadiseLost',
+        attributes 'Implementation-Title': 'AetherReborn',
                 'Implementation-Version': project.version,
                 'Main-Class': 'com.aether.executable.InstallerGUI'
     }
