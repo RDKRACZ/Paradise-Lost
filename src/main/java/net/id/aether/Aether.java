@@ -1,5 +1,6 @@
 package net.id.aether;
 
+import com.mojang.logging.LogUtils;
 import de.guntram.mcmod.crowdintranslate.CrowdinTranslate;
 import net.fabricmc.api.*;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -38,7 +39,6 @@ import net.id.aether.world.feature.AetherFeatures;
 import net.id.aether.world.gen.carver.AetherCarvers;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Docs for Paradise Lost are sometimes written long after
@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Aether implements ModInitializer, ClientModInitializer, DedicatedServerModInitializer {
     public static final String MOD_ID = "the_aether";
-    public static final Logger LOG = LoggerFactory.getLogger(MOD_ID);
+    public static final Logger LOG = LogUtils.getLogger();
     
     /**
      * Creates a new {@link Identifier} based on the passed location.
@@ -124,15 +124,23 @@ public class Aether implements ModInitializer, ClientModInitializer, DedicatedSe
         AetherShaders.init();
         HolidayBlockModel.init();
         AetherSignType.clientInit();
+        AetherScreens.clientInit();
         if(FabricLoader.getInstance().isDevelopmentEnvironment()){
             AetherDevel.Client.init();
         }
     }
     
     // FIXME This is really really really stupid.
+    @Environment(EnvType.SERVER)
+    private static final String DISABLE_WORLD_CHECK = "PARADISE_LOST_DISABLE_WORLD_CHECK";
+    
     @Override
     public void onInitializeServer() {
         ServerLifecycleEvents.SERVER_STARTED.register((server)->{
+            if(System.getProperty(DISABLE_WORLD_CHECK) != null){
+                return;
+            }
+            
             var world = server.getWorld(AetherDimension.AETHER_WORLD_KEY);
             if(world == null){
                 var message = """
@@ -145,9 +153,22 @@ public class Aether implements ModInitializer, ClientModInitializer, DedicatedSe
                     
                     You should only ever see this error message once per world.
                     If restarting the server doesn't solve the issue, then please contact us at https://discord.gg/eRsJ6F3Wng
-                    """;
+                    
+                    If you would like to suppress this crash add -D%s to your arguments.
+                    For example, if you have:
+                    java -jar fabric-server.jar nogui
+                    you would want to add -D%s after the `java` part, like so:
+                    java -D%s -jar fabric-server.jar nogui
+                    """
+                    .formatted(
+                        DISABLE_WORLD_CHECK,
+                        DISABLE_WORLD_CHECK,
+                        DISABLE_WORLD_CHECK
+                    );
                 
                 Runtime.getRuntime().addShutdownHook(new Thread(()->{
+                    // To people who might want to change this to use the Logger class, don't.
+                    // It will not print the message when you do that. I tried.
                     System.err.println(
                         "\n".repeat(10) +
                         message +
